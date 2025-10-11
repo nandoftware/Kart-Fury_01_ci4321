@@ -19,9 +19,14 @@ orbit.update();
 
 const axesHelper = new THREE.AxesHelper(5);
 const planeGeometry = new THREE.PlaneGeometry(30, 30)
-const planeMaterial = new THREE.MeshBasicMaterial({color: 0xF8F850})
+const planeMaterial = new THREE.MeshStandardMaterial({color: 0xF8F850})
 const plane = new THREE.Mesh(planeGeometry, planeMaterial)
 
+const gird = new THREE.GridHelper(100, 10)
+scene.add(gird)
+
+const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 0.8)
+scene.add(directionalLight)
 
 plane.rotation.set(-0.5 * Math.PI,0,0)
 scene.add(plane)
