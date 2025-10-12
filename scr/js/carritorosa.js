@@ -22,9 +22,9 @@ const cabinGeometry = new THREE.BoxGeometry(2.2, 1, 2.5);
 const cabinMaterial = new THREE.MeshStandardMaterial({ 
     color: 0x88CCFF,
     transparent: true,
-    opacity: 0.7,
-    roughness: 0.2,
-    metalness: 0.8
+    // opacity: 0.7,
+    // roughness: 0.2,
+    // metalness: 0.8
 });
 const cabin = new THREE.Mesh(cabinGeometry, cabinMaterial);
 cabin.position.set(0, 1.8, 0.8);
