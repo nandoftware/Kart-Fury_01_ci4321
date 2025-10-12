@@ -2,6 +2,8 @@
 import * as THREE from "three";
 import * as PS from "./pista"
 
+import { carrito } from "./carritorosa";
+
 // import * as THREE from "../../node_modules/three/build/three.module.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
@@ -22,6 +24,11 @@ orbit.update();
 
 
 scene.add(PS.plane)
+
+// posicionamos el carrito en la pista
+carrito.position.set(0, 1, 0);
+scene.add(carrito);
+
 
 // cosas de la escena
 const gird = new THREE.GridHelper(100, 10)
