@@ -1,4 +1,3 @@
-
 import * as THREE from "three";
 import * as PS from "./pista"
 
@@ -6,6 +5,16 @@ import { carrito } from "./carritorosa";
 
 // import * as THREE from "../../node_modules/three/build/three.module.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+
+import { 
+    player,
+    keys,
+    updatePlayer,
+    updateVehiclePosition,
+    updateWheelRotation
+} from './mecánicas';
+
 
 //hola
 
@@ -43,9 +52,27 @@ scene.add(dLightHelper)
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 
-function animate(time){
-    // mesh.rotation.set(mesh.rotation.x + -0.01 * Math.PI,0,0) 
+let lastFrameTime = 0;
+
+function animate(time) {
+    const deltaTime = (time - lastFrameTime) / 1000;
+    lastFrameTime = time;
+    
+    // actualizar mecánicas
+    updatePlayer(deltaTime);
+    
+    // actualizar posición
+    updateVehiclePosition(carrito);
+    
+    // actualizar rotación de ruedas
+    updateWheelRotation(carrito);
+    
+
+    // que la cámara siga al vehículo
+    camera.lookAt(carrito.position);
     
     renderer.render(scene, camera);
 }
-renderer.setAnimationLoop(animate)
+
+
+renderer.setAnimationLoop(animate);
