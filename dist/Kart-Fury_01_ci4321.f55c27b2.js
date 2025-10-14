@@ -727,7 +727,11 @@ const renderer = new _three.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const orbit = new (0, _orbitControlsJs.OrbitControls)(camera, renderer.domElement);
+orbit.enableZoom = true;
+orbit.enablePan = true;
+orbit.enableRotate = true;
 camera.position.set(0, 2, 5);
+orbit.target.copy((0, _carritorosa.carrito).position);
 orbit.update();
 scene.add(_pista.plane);
 // posicionamos el carrito en la pista
@@ -747,14 +751,11 @@ let lastFrameTime = 0;
 function animate(time) {
     const deltaTime = (time - lastFrameTime) / 1000;
     lastFrameTime = time;
-    // actualizar mecánicas
     (0, _mec\u00e1nicas.updatePlayer)(deltaTime);
-    // actualizar posición
-    (0, _mec\u00e1nicas.updateVehiclePosition)((0, _carritorosa.carrito));
-    // actualizar rotación de ruedas
-    (0, _mec\u00e1nicas.updateWheelRotation)((0, _carritorosa.carrito));
-    // que la cámara siga al vehículo
-    camera.lookAt((0, _carritorosa.carrito).position);
+    (0, _mec\u00e1nicas.updateVehiclePosition)((0, _carritorosa.carrito), deltaTime);
+    (0, _mec\u00e1nicas.updateWheelRotation)((0, _carritorosa.carrito), deltaTime);
+    orbit.target.copy((0, _carritorosa.carrito).position);
+    orbit.update();
     renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
@@ -52750,75 +52751,68 @@ function interceptControlUp(event) {
 },{"three":"dsoTF","@parcel/transformer-js/src/esmodule-helpers.js":"9wxGM"}],"koHtP":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "player", ()=>player);
 parcelHelpers.export(exports, "keys", ()=>keys);
-// actualizar jugador 
+parcelHelpers.export(exports, "player", ()=>player);
+// actualizaciones
 parcelHelpers.export(exports, "updatePlayer", ()=>updatePlayer);
-// Actualizar posición del vehículo
+// posicion del carrito
 parcelHelpers.export(exports, "updateVehiclePosition", ()=>updateVehiclePosition);
-// actalización de la rotación de las ruedas
+// ruedas
 parcelHelpers.export(exports, "updateWheelRotation", ()=>updateWheelRotation);
 var _three = require("three");
-var _pista = require("./pista");
-const player = {
-    speed: 0,
-    maxSpeed: 5,
-    acceleration: 0.05,
-    deceleration: 0.1,
-    steering: 0,
-    maxSteering: 0.1,
-    items: [],
-    currentCamera: 'thirdPerson',
-    // para suavizar el giro
-    targetSteering: 0,
-    currentSteering: 0,
-    steeringDamping: 0.8
-};
 const keys = {};
 window.addEventListener('keydown', (e)=>{
-    keys[e.key] = true;
+    keys[e.key.toLowerCase()] = true;
 });
 window.addEventListener('keyup', (e)=>{
-    keys[e.key] = false;
+    keys[e.key.toLowerCase()] = false;
 });
+const player = {
+    speed: 0,
+    maxSpeed: 10,
+    acceleration: 20,
+    deceleration: 15,
+    currentSteering: 0,
+    maxSteering: Math.PI / 6,
+    steeringDamping: 5,
+    rotationSpeed: 2
+};
 function updatePlayer(deltaTime) {
-    // movimiento con W 
+    // Aceleración
     if (keys['w'] || keys['W']) player.speed += player.acceleration * deltaTime;
-    else if (keys['s'] || keys['S']) player.speed -= player.deceleration * deltaTime;
-    else player.speed = 0;
-    // Límites de velocidad
+    else if (keys['s'] || keys['S']) player.speed -= player.acceleration * deltaTime;
+    else {
+        const friction = player.deceleration * deltaTime;
+        if (player.speed > 0) player.speed = Math.max(0, player.speed - friction);
+        else if (player.speed < 0) player.speed = Math.min(0, player.speed + friction);
+    }
     player.speed = Math.max(-player.maxSpeed, Math.min(player.speed, player.maxSpeed));
-    // ángulo para la dirección
+    // Giro
     let targetSteering = 0;
     if (keys['a'] || keys['A']) targetSteering = player.maxSteering;
     else if (keys['d'] || keys['D']) targetSteering = -player.maxSteering;
-    player.currentSteering = player.currentSteering + (targetSteering - player.currentSteering) * player.steeringDamping;
+    player.currentSteering += (targetSteering - player.currentSteering) * player.steeringDamping * deltaTime;
     player.currentSteering = Math.max(-player.maxSteering, Math.min(player.currentSteering, player.maxSteering));
 }
-function updateVehiclePosition(vehicle) {
-    // actualizar rotación del carrito
-    //vehicle.rotation.y += player.currentSteering * deltaTime;
-    // vector para la dirección hacia adelante
-    const forwardDirection = new _three.Vector3(0, 0, -1);
-    // aplicar rotación del carrito al vector
-    forwardDirection.applyQuaternion(vehicle.quaternion);
-    // actualización de la posición usando la dirección correcta
-    vehicle.position.x += player.speed * forwardDirection.x;
-    vehicle.position.z += player.speed * forwardDirection.z;
+function updateVehiclePosition(vehicle, deltaTime) {
+    if (Math.abs(player.speed) > 0.1) vehicle.rotation.y += player.currentSteering * player.rotationSpeed * deltaTime;
+    const forward = new _three.Vector3(0, 0, -1);
+    forward.applyQuaternion(vehicle.quaternion);
+    vehicle.position.add(forward.clone().multiplyScalar(player.speed * deltaTime));
 }
-function updateWheelRotation(vehicle) {
-    const wheelRotationSpeed = player.speed * 0.1;
-    vehicle.children.forEach((wheel)=>{
-        if (wheel.isMesh && wheel.material.color.equals(new _three.Color(0x000000))) {
-            // rotación para movimiento alrededor del eje X
-            wheel.rotation.x = wheelRotationSpeed;
-            // rotación para dirección para ruedas delanteras
-            const isFrontWheel = Math.abs(wheel.position.z) > 1.5;
-            wheel.rotation.y = isFrontWheel ? player.steering : 0;
+function updateWheelRotation(vehicle, deltaTime) {
+    const wheelRotation = player.speed * deltaTime * 5;
+    vehicle.children.forEach((child)=>{
+        if (child.geometry && child.geometry.type === 'CylinderGeometry') {
+            if (child.material && child.material.color.getHex() === 0x222222) {
+                child.rotation.x += wheelRotation;
+                const isFront = Math.abs(child.position.z) > 1.5;
+                if (isFront) child.rotation.y = player.currentSteering;
+            }
         }
     });
 }
 
-},{"three":"dsoTF","./pista":"hd7wR","@parcel/transformer-js/src/esmodule-helpers.js":"9wxGM"}]},["jsuqY","dePbo"], "dePbo", "parcelRequire94c2", {})
+},{"three":"dsoTF","@parcel/transformer-js/src/esmodule-helpers.js":"9wxGM"}]},["jsuqY","dePbo"], "dePbo", "parcelRequire94c2", {})
 
 //# sourceMappingURL=Kart-Fury_01_ci4321.f55c27b2.js.map

@@ -27,8 +27,12 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 const orbit = new OrbitControls(camera, renderer.domElement);
+orbit.enableZoom = true
+orbit.enablePan = true
+orbit.enableRotate = true
 
 camera.position.set(0,2,5);
+orbit.target.copy(carrito.position)
 orbit.update();
 
 
@@ -57,20 +61,14 @@ let lastFrameTime = 0;
 function animate(time) {
     const deltaTime = (time - lastFrameTime) / 1000;
     lastFrameTime = time;
-    
-    // actualizar mecánicas
-    updatePlayer(deltaTime);
-    
-    // actualizar posición
-    updateVehiclePosition(carrito);
-    
-    // actualizar rotación de ruedas
-    updateWheelRotation(carrito);
-    
 
-    // que la cámara siga al vehículo
-    camera.lookAt(carrito.position);
-    
+    updatePlayer(deltaTime);
+    updateVehiclePosition(carrito, deltaTime); 
+    updateWheelRotation(carrito, deltaTime);   
+
+    orbit.target.copy(carrito.position);
+    orbit.update(); 
+
     renderer.render(scene, camera);
 }
 
