@@ -1,5 +1,9 @@
 import * as THREE from "three";
 
+const PISTA_ANCHO = 30;
+const LIMITE_IZQUIERDO = -PISTA_ANCHO / 2 + 0.5; 
+const LIMITE_DERECHO = PISTA_ANCHO / 2 - 0.5;     
+
 //  teclas 
 export const keys = {};
 
@@ -29,7 +33,8 @@ export const player = {
 
 // actualizaciones
 export function updatePlayer(deltaTime) {
-    // Aceleración
+
+    // aceleración
     if (keys['w'] || keys['W']) {
         player.speed += player.acceleration * deltaTime;
     } else if (keys['s'] || keys['S']) {
@@ -89,4 +94,24 @@ export function updateWheelRotation(vehicle, deltaTime) {
             }
         }
     });
+}
+
+
+// limites para que solo transite sobre la pista
+export function aplicarLimitesPista(vehicle) {
+    const x = vehicle.position.x;
+
+    if (x < LIMITE_IZQUIERDO) {
+        vehicle.position.x = LIMITE_IZQUIERDO;
+        
+        player.speed *= 0.7; 
+        player.currentSteering = player.maxSteering * 0.5; 
+    }
+   
+
+    else if (x > LIMITE_DERECHO) {
+        vehicle.position.x = LIMITE_DERECHO;
+        player.speed *= 0.7;
+        player.currentSteering = -player.maxSteering * 0.5; 
+    }
 }
