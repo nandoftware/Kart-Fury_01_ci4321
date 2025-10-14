@@ -12,8 +12,13 @@ import {
     keys,
     updatePlayer,
     updateVehiclePosition,
-    updateWheelRotation
+    updateWheelRotation,
+    aplicarLimitesPista
 } from './mecánicas';
+
+import { plane } from "./pista";
+
+import { crearAmbiente } from "./ambiente";
 
 
 //hola
@@ -21,6 +26,8 @@ import {
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
+// ambiente
+crearAmbiente(scene);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -35,17 +42,17 @@ camera.position.set(0,2,5);
 orbit.target.copy(carrito.position)
 orbit.update();
 
-
-scene.add(PS.plane)
+import { plane } from "./pista";
+scene.add(plane);
 
 // posicionamos el carrito en la pista
-carrito.position.set(0, 1, 0);
+carrito.position.set(0, 0, 0);
 scene.add(carrito);
 
 
 // cosas de la escena
-const gird = new THREE.GridHelper(100, 10)
-scene.add(gird)
+//const gird = new THREE.GridHelper(100, 10) lo quite jiji
+//scene.add(gird)
 
 const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 0.8)
 directionalLight.position.set(-30,50,0)
@@ -65,6 +72,8 @@ function animate(time) {
     updatePlayer(deltaTime);
     updateVehiclePosition(carrito, deltaTime); 
     updateWheelRotation(carrito, deltaTime);   
+
+    aplicarLimitesPista(carrito);
 
     orbit.target.copy(carrito.position);
     orbit.update(); 
