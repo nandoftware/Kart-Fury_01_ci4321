@@ -1,11 +1,9 @@
 import * as THREE from "three";
-import * as PS from "./pista"
+// import * as PS from "./pista"
 
 import { carrito } from "./carritorosa";
 
-// import * as THREE from "../../node_modules/three/build/three.module.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-
 
 import { 
     player,
@@ -42,7 +40,7 @@ camera.position.set(0,2,5);
 orbit.target.copy(carrito.position)
 orbit.update();
 
-import { plane } from "./pista";
+
 scene.add(plane);
 
 // posicionamos el carrito en la pista

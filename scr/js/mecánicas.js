@@ -35,11 +35,12 @@ export const player = {
 export function updatePlayer(deltaTime) {
 
     // aceleración
-    if (keys['w'] || keys['W']) {
+    if (keys['w'] || keys['W']) { // lees adelante
         player.speed += player.acceleration * deltaTime;
-    } else if (keys['s'] || keys['S']) {
+    } else if (keys['s'] || keys['S']) { // lees atras
         player.speed -= player.acceleration * deltaTime;
     } else {
+        // basicamente simulamos la friccion cuando deja de moverse para desacelerar hasta llegar a 0
         const friction = player.deceleration * deltaTime;
         if (player.speed > 0) {
             player.speed = Math.max(0, player.speed - friction);

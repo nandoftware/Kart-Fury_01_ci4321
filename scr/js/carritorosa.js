@@ -7,16 +7,16 @@ const lightPink = 0xFFB6C1;
 
 
 
-// Cuerpo
+// Carroceria
 const bodyGeometry = new THREE.BoxGeometry(3.5, 1.2, 6);
 const bodyMaterial = new THREE.MeshStandardMaterial({ 
     color: pinkColor,
-    roughness: 0.4,
+    //roughness: 0.4,
     metalness: 0.6
 });
 const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
 body.position.y = 1.5;
-body.castShadow = true;
+// body.castShadow = true;
 carrito.add(body);
 
 
@@ -26,13 +26,13 @@ const cabinGeometry = new THREE.BoxGeometry(2.2, 1, 2.5);
 const cabinMaterial = new THREE.MeshStandardMaterial({ 
     color: 0x88CCFF,
     transparent: true,
-    // opacity: 0.7,
+    opacity: 0.7,
     // roughness: 0.2,
     // metalness: 0.8
 });
 const cabin = new THREE.Mesh(cabinGeometry, cabinMaterial);
 cabin.position.set(0, 2.3, 1.5);
-cabin.castShadow = true;
+// cabin.castShadow = true;
 carrito.add(cabin);
 
 
@@ -41,15 +41,15 @@ carrito.add(cabin);
 const wheelGeometry = new THREE.CylinderGeometry(0.9, 0.9, 0.5, 16);
 const wheelMaterial = new THREE.MeshStandardMaterial({ 
     color: 0x222222,
-    roughness: 0.9,
-    metalness: 0.1
+    // roughness: 0.9,
+    // metalness: 0.1
 });
 
-const wheelRimGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.42, 12);
+const wheelRimGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.55, 6);
 const wheelRimMaterial = new THREE.MeshStandardMaterial({ 
     color: lightPink,
-    roughness: 0.3,
-    metalness: 0.8
+    // roughness: 0.3,
+    // metalness: 0.8
 });
 
 const wheelPositions = [
@@ -63,13 +63,13 @@ wheelPositions.forEach(pos => {
     const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
     wheel.position.set(pos.x, pos.y, pos.z);
     wheel.rotation.z = Math.PI / 2;
-    wheel.castShadow = true;
+    // wheel.castShadow = true;
     carrito.add(wheel);
 
     const wheelRim = new THREE.Mesh(wheelRimGeometry, wheelRimMaterial);
     wheelRim.position.set(pos.x, pos.y, pos.z);
     wheelRim.rotation.z = Math.PI / 2;
-    wheelRim.castShadow = true;
+    // wheelRim.castShadow = true;
     carrito.add(wheelRim);
 });
 
@@ -81,6 +81,16 @@ const lightMaterial = new THREE.MeshBasicMaterial({
     color: 0xFFFFFF,
     side: THREE.DoubleSide
 });
+
+const lightPos = [
+    { x: -0.8, y: 1, z: -2.95 },
+    { x: 0.8, y: 1, z: -2.95 },
+]
+
+// lightPos.forEach(pos =>{
+//     const frontLight = new THREE.Mesh(lightGeometry, lightMaterial);
+//     leftLight.position.set(-0.8, 1, -2.95);
+// })
 
 const leftLight = new THREE.Mesh(lightGeometry, lightMaterial);
 leftLight.position.set(-0.8, 1, -2.95);

@@ -1,38 +1,41 @@
 import * as THREE from "three"
 
-// carretera negra 
+// cosas de la coarretera
+// ancho y lago de la carretera
 const roadWidth = 26;
 const roadLength = 500;
-const borderWidth = 1;
-const stripeWidth = 1.5;
-const stripeLength = 5;
-const stripeGap = 10
+
+// lineas amarillas a los lados
+const borderWidth = 5;
+
+// rayas blancas
+const stripeWidth = 1.5; 
+const stripeLength = 5; 
+const stripeGap = 10 // espacio entre rayas
 
 
 const roadGeometry = new THREE.PlaneGeometry(roadWidth, roadLength);
 const roadMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 }); 
 const road = new THREE.Mesh(roadGeometry, roadMaterial);
 road.rotation.set(-0.5 * Math.PI, 0, 0);
-road.receiveShadow = true;
+// road.receiveShadow = true;
 
 
-
-// borde blanco izquierdo
+// borde amarillo izquierdo
 const borderGeometry = new THREE.PlaneGeometry(borderWidth, roadLength);
 const borderMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700 }); 
 
 const leftBorder = new THREE.Mesh(borderGeometry, borderMaterial);
+leftBorder
 leftBorder.position.x = -(roadWidth / 2 + borderWidth / 2); 
 leftBorder.rotation.set(-0.5 * Math.PI, 0, 0);
-leftBorder.receiveShadow = true;
+// leftBorder.receiveShadow = true;
 
-
-
-// borde blanco derecho
+// borde amarillo derecho
 const rightBorder = new THREE.Mesh(borderGeometry, borderMaterial);
 rightBorder.position.x = roadWidth / 2 + borderWidth / 2; 
 rightBorder.rotation.set(-0.5 * Math.PI, 0, 0);
-rightBorder.receiveShadow = true
+// rightBorder.receiveShadow = true
 
 
 
@@ -47,7 +50,7 @@ for (let i = 0; i < totalStripes; i++) {
     const stripeMaterial = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
     const stripe = new THREE.Mesh(stripeGeometry, stripeMaterial);
 
-    stripe.position.set(0, 0, zPosition); 
+    stripe.position.set(0, 0.1, zPosition); 
     stripe.rotation.set(-0.5 * Math.PI, 0, 0); 
     stripe.receiveShadow = true;
 

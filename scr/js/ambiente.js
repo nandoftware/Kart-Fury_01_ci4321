@@ -1,10 +1,10 @@
 import * as THREE from "three";
 
 export function crearAmbiente(scene) {
-    
+    // luz direccional representada con un sol en la escena
     const sol = new THREE.DirectionalLight(0xFFFFFF, 1.2);
     sol.position.set(50, 80, 50); 
-    sol.castShadow = true;
+    sol.castShadow = true; // castea sombras
 
     sol.shadow.mapSize.width = 1024;
     sol.shadow.mapSize.height = 1024;
@@ -22,19 +22,18 @@ export function crearAmbiente(scene) {
     const luzAmbiental = new THREE.AmbientLight(0x404040, 0.6);
     scene.add(luzAmbiental);
 
-
-
     // cielo azul
     scene.background = new THREE.Color(0x87CEEB); 
 
 
     // sol solecito calientame un poquito
+    // directamente en la escena
     const solVisual = new THREE.Mesh(
         new THREE.SphereGeometry(10, 30, 30),
         new THREE.MeshBasicMaterial({ color: 0xFFFF00 })
     );
+    
     solVisual.position.copy(sol.position);
-    solVisual.visible = true; 
     scene.add(solVisual);
 
     return { sol, solVisual };
