@@ -26,7 +26,7 @@ export const player = {
     currentSteering: 0,
     maxSteering: Math.PI / 6,
     steeringDamping: 5,
-    rotationSpeed: 2
+    rotationSpeed: 4
 };
 
 
@@ -49,6 +49,7 @@ export function updatePlayer(deltaTime) {
         }
     }
 
+    // y aqui le aplicamos limites de velicidad
     player.speed = Math.max(-player.maxSpeed, Math.min(player.speed, player.maxSpeed));
 
 
@@ -67,7 +68,7 @@ export function updatePlayer(deltaTime) {
 
 
 
-// posicion del carrito
+// posicion del carrito, vichle = carrito
 export function updateVehiclePosition(vehicle, deltaTime) {
     if (Math.abs(player.speed) > 0.1) {
         vehicle.rotation.y += player.currentSteering * player.rotationSpeed * deltaTime;
@@ -75,26 +76,21 @@ export function updateVehiclePosition(vehicle, deltaTime) {
 
     const forward = new THREE.Vector3(0, 0, -1);
     forward.applyQuaternion(vehicle.quaternion);
-    vehicle.position.add(forward.clone().multiplyScalar(player.speed * deltaTime));
+    vehicle.position.add(forward.multiplyScalar(player.speed * deltaTime));
 }
 
 
 
 // ruedas
-export function updateWheelRotation(vehicle, deltaTime) {
-    const wheelRotation = player.speed * deltaTime * 5;
-
-    vehicle.children.forEach(child => {
-        if (child.geometry && child.geometry.type === 'CylinderGeometry') {
-            if (child.material && child.material.color.getHex() === 0x222222) {
-                child.rotation.x += wheelRotation;
-                const isFront = Math.abs(child.position.z) > 1.5;
-                if (isFront) {
-                    child.rotation.y = player.currentSteering;
-                }
-            }
-        }
+export function updateWheelRotation(wheels, deltaTime) {
+    const wheelRotation = player.speed * deltaTime * -4;
+    //que se muevan para adelante o para atras las ruedas y que roten en y los rines
+    wheels.children[0].children.forEach(child => {
+        child.rotation.x += wheelRotation;
     });
+    for (let index = 1; index < 3; index++) {
+        wheels.children[index].rotation .y = player.currentSteering;
+    }
 }
 
 

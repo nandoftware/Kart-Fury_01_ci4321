@@ -31,6 +31,7 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
+// la camara fija (temporal)
 const orbit = new OrbitControls(camera, renderer.domElement);
 orbit.enableZoom = true
 orbit.enablePan = true
@@ -40,17 +41,13 @@ camera.position.set(0,2,5);
 orbit.target.copy(carrito.position)
 orbit.update();
 
-
+// metemos la pista
 scene.add(plane);
 
 // posicionamos el carrito en la pista
 carrito.position.set(0, 0, 0);
 scene.add(carrito);
 
-
-// cosas de la escena
-//const gird = new THREE.GridHelper(100, 10) lo quite jiji
-//scene.add(gird)
 
 const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 0.8)
 directionalLight.position.set(-30,50,0)
@@ -64,12 +61,14 @@ scene.add(axesHelper);
 let lastFrameTime = 0;
 
 function animate(time) {
+    // el delta tain de toda la vida
     const deltaTime = (time - lastFrameTime) / 1000;
     lastFrameTime = time;
 
     updatePlayer(deltaTime);
     updateVehiclePosition(carrito, deltaTime); 
-    updateWheelRotation(carrito, deltaTime);   
+    
+    updateWheelRotation(carrito.children[1], deltaTime);   
 
     aplicarLimitesPista(carrito);
 
