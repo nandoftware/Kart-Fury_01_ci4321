@@ -3,10 +3,10 @@ import * as THREE from "three";
 const carrito = new THREE.Group();
     const carroceria = new THREE.Group()
     const ruedas = new THREE.Group()
-        const cauchos = new THREE.Group()
+        // const cauchos = new THREE.Group()
 carrito.add(carroceria)
 carrito.add(ruedas)
-ruedas.add(cauchos)
+// ruedas.add(cauchos)
 
 const pinkColor = 0xFF69B4;
 const lightPink = 0xFFB6C1;
@@ -67,17 +67,18 @@ const wheelPositions = [
 
 wheelPositions.forEach(pos => {
     const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
-    wheel.position.set(pos.x, pos.y, pos.z);
-    wheel.rotation.z = Math.PI / 2;
+    // wheel.position.set(pos.x, pos.y, pos.z);
+    // wheel.rotation.z = Math.PI / 2;
     // wheel.castShadow = true;
    
-    cauchos.add(wheel);
+    // cauchos.add(wheel);
 
     const wheelRim = new THREE.Mesh(wheelRimGeometry, wheelRimMaterial);
     wheelRim.position.set(pos.x, pos.y, pos.z);
     wheelRim.rotation.z = Math.PI / 2;
     // wheelRim.castShadow = true;
     ruedas.add(wheelRim);
+    wheelRim.add(wheel)
 });
 
 

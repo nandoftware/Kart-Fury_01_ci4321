@@ -83,13 +83,13 @@ export function updateVehiclePosition(vehicle, deltaTime) {
 
 // ruedas
 export function updateWheelRotation(wheels, deltaTime) {
-    const wheelRotation = player.speed * deltaTime * -4;
+    const wheelRotation = player.speed * deltaTime * 4;
     //que se muevan para adelante o para atras las ruedas y que roten en y los rines
-    wheels.children[0].children.forEach(child => {
-        child.rotation.x += wheelRotation;
+    wheels.children.forEach(child => {
+        child.children[0].rotation.y += wheelRotation;
     });
-    for (let index = 1; index < 3; index++) {
-        wheels.children[index].rotation .y = player.currentSteering;
+    for (let index = 0; index < 2; index++) {
+        wheels.children[index].rotation.y = player.currentSteering;
     }
 }
 
