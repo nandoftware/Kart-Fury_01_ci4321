@@ -84,32 +84,38 @@ wheelPositions.forEach(pos => {
 
 
 // luces delanteras
-const lightGeometry = new THREE.CircleGeometry(0.25, 16);
+const lightGeometry = new THREE.BoxGeometry(0.4, 0.2, 0.2);
 const lightMaterial = new THREE.MeshBasicMaterial({ 
     color: 0xFFFFFF,
     side: THREE.DoubleSide
 });
 
 const lightPos = [
-    { x: -0.8, y: 1, z: -2.95 },
-    { x: 0.8, y: 1, z: -2.95 },
+    { x: -1, y: 1.5, z: -3 },
+    { x: 1, y: 1.5, z: -3 },
 ]
 
-// lightPos.forEach(pos =>{
-//     const frontLight = new THREE.Mesh(lightGeometry, lightMaterial);
-//     leftLight.position.set(-0.8, 1, -2.95);
-// })
+lightPos.forEach(pos =>{
+    const frontLight = new THREE.Mesh(lightGeometry, lightMaterial);
+    frontLight.position.set(pos.x, pos.y, pos.z);
+    carrito.add(frontLight)
+})
 
-const leftLight = new THREE.Mesh(lightGeometry, lightMaterial);
-leftLight.position.set(-0.8, 1, -2.95);
-leftLight.rotation.x = Math.PI / 2;
-carroceria.add(leftLight);
+// luces traceras
+export const light2Material = new THREE.MeshBasicMaterial({ 
+    color: 0x550000,
+    side: THREE.DoubleSide
+});
+const lightTPos = [
+    { x: -1, y: 1.5, z: 3 },
+    { x: 1, y: 1.5, z: 3 },
+]
 
-const rightLight = new THREE.Mesh(lightGeometry, lightMaterial);
-rightLight.position.set(0.8, 1, -2.95);
-rightLight.rotation.x = Math.PI / 2;
-carroceria.add(rightLight);
-
+lightTPos.forEach(pos =>{
+    const backLight = new THREE.Mesh(lightGeometry, light2Material);
+    backLight.position.set(pos.x, pos.y, pos.z);
+    carrito.add(backLight)
+})
 
 
 // puertas

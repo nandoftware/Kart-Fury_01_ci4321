@@ -6,8 +6,6 @@ import { carrito } from "./carritorosa";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 import { 
-    player,
-    keys,
     updatePlayer,
     updateVehiclePosition,
     updateWheelRotation,
@@ -22,7 +20,7 @@ import { crearAmbiente } from "./ambiente";
 //hola
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const mainCamera = new THREE.PerspectivemainCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
 // ambiente
 crearAmbiente(scene);
@@ -32,12 +30,12 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 // la camara fija (temporal)
-const orbit = new OrbitControls(camera, renderer.domElement);
+const orbit = new OrbitControls(mainCamera, renderer.domElement);
 orbit.enableZoom = true
 orbit.enablePan = true
 orbit.enableRotate = true
 
-camera.position.set(0,2,5);
+mainCamera.position.set(0,2,5);
 orbit.target.copy(carrito.position)
 orbit.update();
 
@@ -75,7 +73,7 @@ function animate(time) {
     orbit.target.copy(carrito.position);
     orbit.update(); 
 
-    renderer.render(scene, camera);
+    renderer.render(scene, mainCamera);
 }
 
 

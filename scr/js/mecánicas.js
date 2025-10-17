@@ -70,8 +70,12 @@ export function updatePlayer(deltaTime) {
 
 // posicion del carrito, vichle = carrito
 export function updateVehiclePosition(vehicle, deltaTime) {
-    if (Math.abs(player.speed) > 0.1) {
+    
+    if (player.speed > 0) {
         vehicle.rotation.y += player.currentSteering * player.rotationSpeed * deltaTime;
+    }
+    else if(player.speed < 0){
+        vehicle.rotation.y += -player.currentSteering * player.rotationSpeed * deltaTime;
     }
 
     const forward = new THREE.Vector3(0, 0, -1);
