@@ -5,7 +5,7 @@ import { carrito } from "./carritorosa";
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-import { 
+import {
     updatePlayer,
     updateVehiclePosition,
     updateWheelRotation,
@@ -20,7 +20,8 @@ import { crearAmbiente } from "./ambiente";
 //hola
 
 const scene = new THREE.Scene();
-const mainCamera = new THREE.PerspectivemainCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+export const mainCamera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const carritoCamera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
 
 // ambiente
 crearAmbiente(scene);
@@ -30,14 +31,14 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 // la camara fija (temporal)
-const orbit = new OrbitControls(mainCamera, renderer.domElement);
-orbit.enableZoom = true
-orbit.enablePan = true
-orbit.enableRotate = true
+// const orbit = new OrbitControls(mainCamera, renderer.domElement);
+// orbit.enableZoom = true
+// orbit.enablePan = true
+// orbit.enableRotate = true
 
-mainCamera.position.set(0,2,5);
-orbit.target.copy(carrito.position)
-orbit.update();
+mainCamera.position.set(0,15,10);
+// orbit.target.copy(carrito.position)
+// orbit.update();
 
 // metemos la pista
 scene.add(plane);
@@ -45,6 +46,9 @@ scene.add(plane);
 // posicionamos el carrito en la pista
 carrito.position.set(0, 0, 0);
 scene.add(carrito);
+const front = new THREE.Vector3(0,0,-10)
+mainCamera.lookAt(front )
+carrito.add(mainCamera)
 
 
 const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 0.8)
@@ -64,17 +68,18 @@ function animate(time) {
     lastFrameTime = time;
 
     updatePlayer(deltaTime);
-    updateVehiclePosition(carrito, deltaTime); 
+    updateVehiclePosition(carrito, deltaTime);
     
-    updateWheelRotation(carrito.children[1], deltaTime);   
+    updateWheelRotation(carrito.children[1], deltaTime);
 
-    aplicarLimitesPista(carrito);
+    aplicarLimitesPista(carrito); 
 
-    orbit.target.copy(carrito.position);
-    orbit.update(); 
+
+
+    // orbit.target.copy(carrito.position);
+    // orbit.update(); 
 
     renderer.render(scene, mainCamera);
 }
-
 
 renderer.setAnimationLoop(animate);

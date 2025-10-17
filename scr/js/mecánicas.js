@@ -1,5 +1,6 @@
 import * as THREE from "three";
 
+
 const PISTA_ANCHO = 30;
 const LIMITE_IZQUIERDO = -PISTA_ANCHO / 2 + 0.5; 
 const LIMITE_DERECHO = PISTA_ANCHO / 2 - 0.5;     
@@ -20,7 +21,7 @@ window.addEventListener('keyup', (e) => {
 // jugador 
 export const player = {
     speed: 0,
-    maxSpeed: 10,
+    maxSpeed: 15,
     acceleration: 20,
     deceleration: 15,
     currentSteering: 0,
@@ -28,6 +29,7 @@ export const player = {
     steeringDamping: 5,
     rotationSpeed: 4
 };
+
 
 
 
