@@ -20,10 +20,15 @@ const bodyMaterial = new THREE.MeshStandardMaterial({
     //roughness: 0.4,
     metalness: 0.6
 });
-const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+export const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
 body.position.y = 1.5;
 // body.castShadow = true;
 carroceria.add(body);
+
+
+
+
+
 
 
 
@@ -33,6 +38,7 @@ const cabinMaterial = new THREE.MeshStandardMaterial({
     color: 0x88CCFF,
     transparent: true,
     opacity: 0.7,
+    side: THREE.DoubleSide
     // roughness: 0.2,
     // metalness: 0.8
 });
@@ -145,7 +151,6 @@ rightDoor.position.set(3.5 / 2 + doorThickness / 2, 1.5, 0);
 rightDoor.castShadow = true;
 rightDoor.receiveShadow = true;
 carroceria.add(rightDoor);
-
 
 
 export { carrito };

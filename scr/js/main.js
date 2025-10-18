@@ -1,14 +1,14 @@
 import * as THREE from "three";
 // import * as PS from "./pista"
 
-import { carrito } from "./carritorosa";
+import { 
+    carrito,
+ } from "./carritorosa";
 
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 import { 
     UpdateCamra,
-    ChangeCameras
-
  } from "./camaras";
 
 import {
@@ -16,20 +16,30 @@ import {
     updateVehiclePosition,
     updateWheelRotation,
     aplicarLimitesPista,
-    // UpdateCamra
 } from './mecánicas';
 
 import { plane } from "./pista";
 
 import { crearAmbiente } from "./ambiente";
 
+import { 
+    UpdateCollidersPos,
+    Checkcollisions,
+} from "./colisiones";
+
+import { 
+    caja,
+    PowerUpAnimation,
+ } from "./powerUps";
 
 //hola
 
 const scene = new THREE.Scene();
-export const mainCamera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const mainCamera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 const carritoCamera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
 
+
+const camaras = [mainCamera, carritoCamera]
 // ambiente
 crearAmbiente(scene);
 
@@ -39,13 +49,16 @@ document.body.appendChild( renderer.domElement );
 
 // la camara fija (temporal)
 // const orbit = new OrbitControls(mainCamera, renderer.domElement);
-// orbit.enableZoom = true
-// orbit.enablePan = true
-// orbit.enableRotate = true
+// orbit.enableZoom = false
+// orbit.enablePan = false
+// orbit.enableRotate = true  
 
-mainCamera.position.set(0,15,10);
-// orbit.target.copy(carrito.position)
+mainCamera.position.set(0,10,10);
+carritoCamera.position.set(0,2.5,1.5);
 // orbit.update();
+
+
+scene.add(caja)
 
 // metemos la pista
 scene.add(plane);
@@ -54,9 +67,11 @@ scene.add(plane);
 carrito.position.set(0, 0, -75);
 carrito.rotation.y = Math.PI / 2;
 scene.add(carrito);
-const front = new THREE.Vector3(0,0,-10)
-mainCamera.lookAt(front )
-carrito.add(mainCamera)
+const front = new THREE.Vector3(0,0,-10);
+mainCamera.lookAt(front );
+
+carrito.add(mainCamera);
+carrito.add(carritoCamera);
 
 
 const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 0.8)
@@ -65,8 +80,8 @@ directionalLight.position.set(-30,50,0)
 scene.add(directionalLight)
 // scene.add(dLightHelper)
 
-// const axesHelper = new THREE.AxesHelper(5);
-// scene.add(axesHelper);
+const axesHelper = new THREE.AxesHelper(5);
+scene.add(axesHelper);
 
 let lastFrameTime = 0;
 
@@ -81,12 +96,14 @@ function animate(time) {
     updateWheelRotation(carrito.children[1], deltaTime);
 
     aplicarLimitesPista(carrito); 
+    PowerUpAnimation();
 
-
-
-    // orbit.target.copy(carrito.position);
+    UpdateCollidersPos();
+    Checkcollisions();
+    
+    UpdateCamra(renderer, scene, camaras);
+    
     // orbit.update(); 
-    UpdateCamra(renderer, scene, mainCamera);
 
     // renderer.render(scene, mainCamera);
 }

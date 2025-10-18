@@ -7,6 +7,7 @@ const LIMITE_DERECHO = PISTA_ANCHO / 2 - 0.5;
 
 //  teclas 
 export const keys = {};
+export const keysOnlyOne = {};
 
 window.addEventListener('keydown', (e) => {
     keys[e.key.toLowerCase()] = true;
@@ -15,6 +16,7 @@ window.addEventListener('keydown', (e) => {
 window.addEventListener('keyup', (e) => {
     keys[e.key.toLowerCase()] = false;
 });
+
 
 
 

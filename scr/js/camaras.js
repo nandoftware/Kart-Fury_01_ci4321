@@ -1,17 +1,20 @@
 import * as THREE from "three";
-import { keys } from "./mecánicas";
 
+var indice = 0;
+var once= true;
 
-export function UpdateCamra(rend, sce, cam){
-    rend.render(sce, cam);
+export function UpdateCamra(rend, sce, cams){
+    rend.render(sce, cams[indice]);
 }
 
-
-export function ChangeCameras(){
-
-    if (keys['O']||keys['o']){
-        
+window.addEventListener('keyup', (e) => {
+    
+    if (e.key == 't'||e.key == 't'){
+        indice = indice + 1;
     }
+    if (indice > 1){
+        indice = 0;
+    }
+    
+}, false);
 
-
-}
