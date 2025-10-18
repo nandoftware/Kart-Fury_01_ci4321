@@ -5,11 +5,18 @@ import { carrito } from "./carritorosa";
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+import { 
+    UpdateCamra,
+    ChangeCameras
+
+ } from "./camaras";
+
 import {
     updatePlayer,
     updateVehiclePosition,
     updateWheelRotation,
-    aplicarLimitesPista
+    aplicarLimitesPista,
+    // UpdateCamra
 } from './mecánicas';
 
 import { plane } from "./pista";
@@ -79,8 +86,9 @@ function animate(time) {
 
     // orbit.target.copy(carrito.position);
     // orbit.update(); 
+    UpdateCamra(renderer, scene, mainCamera);
 
-    renderer.render(scene, mainCamera);
+    // renderer.render(scene, mainCamera);
 }
 
 renderer.setAnimationLoop(animate);

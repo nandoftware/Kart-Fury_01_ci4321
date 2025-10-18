@@ -31,7 +31,9 @@ export const player = {
 };
 
 
-
+// export function UpdateCamra(rend, sce, cam){
+//     rend.render(sce, cam);
+// }
 
 // actualizaciones
 export function updatePlayer(deltaTime) {
