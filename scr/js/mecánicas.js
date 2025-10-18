@@ -101,20 +101,41 @@ export function updateWheelRotation(wheels, deltaTime) {
 
 
 // limites para que solo transite sobre la pista
+
+const ancho = 200;    // total
+const alto = 150;    // total
+const anchoCarretera = 35;      
+
+const mitadExteriorX = ancho / 2 + anchoCarretera / 2;   
+const mitadExteriorZ = alto / 2 + anchoCarretera / 2;  
+
+const mitadInteriorX = ancho / 2 - anchoCarretera / 2;   
+const mitadInteriorZ = alto / 2 - anchoCarretera / 2;  
+
 export function aplicarLimitesPista(vehicle) {
     const x = vehicle.position.x;
+    const z = vehicle.position.z;
 
-    if (x < LIMITE_IZQUIERDO) {
-        vehicle.position.x = LIMITE_IZQUIERDO;
-        
-        player.speed *= 0.7; 
-        player.currentSteering = player.maxSteering * 0.5; 
-    }
    
+    if (x < -mitadExteriorX) vehicle.position.x = -mitadExteriorX;
+    else if (x > mitadExteriorX) vehicle.position.x = mitadExteriorX;
 
-    else if (x > LIMITE_DERECHO) {
-        vehicle.position.x = LIMITE_DERECHO;
-        player.speed *= 0.7;
-        player.currentSteering = -player.maxSteering * 0.5; 
+    if (z < -mitadExteriorZ) vehicle.position.z = -mitadExteriorZ;
+    else if (z > mitadExteriorZ) vehicle.position.z = mitadExteriorZ;
+
+    
+    if (Math.abs(x) < mitadInteriorX && Math.abs(z) < mitadInteriorZ) {
+        
+        const distX = mitadInteriorX - Math.abs(x);
+        const distZ = mitadInteriorZ - Math.abs(z);
+
+        if (distX < distZ) {
+            
+            vehicle.position.x = x > 0 ? mitadInteriorX : -mitadInteriorX;
+        } else {
+            
+            vehicle.position.z = z > 0 ? mitadInteriorZ : -mitadInteriorZ;
+        }
     }
+
 }
