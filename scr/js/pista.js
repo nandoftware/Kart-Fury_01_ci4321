@@ -2,8 +2,9 @@ import * as THREE from "three"
 
 // cosas de la coarretera
 // ancho y lago de la carretera
-const roadWidth = 26;
-const roadLength = 500;
+const roadWidth = 35;        
+const totalWidth = 200;      
+const totalHeight = 150;  
 
 // lineas amarillas a los lados
 const borderWidth = 5;
@@ -14,53 +15,152 @@ const stripeLength = 5;
 const stripeGap = 10 // espacio entre rayas
 
 
-const roadGeometry = new THREE.PlaneGeometry(roadWidth, roadLength);
-const roadMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 }); 
-const road = new THREE.Mesh(roadGeometry, roadMaterial);
-road.rotation.set(-0.5 * Math.PI, 0, 0);
-// road.receiveShadow = true;
+const halfW = totalWidth / 2;      
+const halfH = totalHeight / 2;     
+const halfRoad = roadWidth / 2;    
+
+// para los bordes amarillos
+const OUTER_HALF_X = halfW + halfRoad; 
+const OUTER_HALF_Z = halfH + halfRoad; 
+const INNER_HALF_X = halfW - halfRoad; /
+const INNER_HALF_Z = halfH - halfRoad; 
+
+// segmentos largos en el eje x y SIN bordes amarillos 
+function createLongSegment(length) {
+    const road = new THREE.Mesh(
+        new THREE.PlaneGeometry(length, roadWidth),
+        new THREE.MeshStandardMaterial({ color: 0x000000 })
+    );
+    road.rotation.x = -Math.PI / 2;
+
+    // líneas  blancas
+    const stripes = new THREE.Group();
+    const count = Math.floor(length / (stripeLength + stripeGap));
+    for (let i = 0; i < count; i++) {
+        const x = -length / 2 + i * (stripeLength + stripeGap) + stripeLength / 2;
+        const stripe = new THREE.Mesh(
+            new THREE.PlaneGeometry(stripeLength, stripeWidth),
+            new THREE.MeshStandardMaterial({ color: 0xFFFFFF })
+        );
+        stripe.position.set(x, 0.1, 0);
+        stripe.rotation.x = -Math.PI / 2;
+        stripes.add(stripe);
+    }
+
+    const segment = new THREE.Group();
+    segment.add(road);
+    segment.add(stripes);
+    return segment;
+}
+
+// segmentos cortos en el eje Z y SIN bordes amarillos 
+function createShortSegment(length) {
+    const road = new THREE.Mesh(
+        new THREE.PlaneGeometry(roadWidth, length),
+        new THREE.MeshStandardMaterial({ color: 0x000000 })
+    );
+    road.rotation.x = -Math.PI / 2;
+
+    // Líneas divisorias blancas
+    const stripes = new THREE.Group();
+    const count = Math.floor(length / (stripeLength + stripeGap));
+    for (let i = 0; i < count; i++) {
+        const z = -length / 2 + i * (stripeLength + stripeGap) + stripeLength / 2;
+        const stripe = new THREE.Mesh(
+            new THREE.PlaneGeometry(stripeWidth, stripeLength),
+            new THREE.MeshStandardMaterial({ color: 0xFFFFFF })
+        );
+        stripe.position.set(0, 0.1, z);
+        stripe.rotation.x = -Math.PI / 2;
+        stripes.add(stripe);
+    }
+
+    const segment = new THREE.Group();
+    segment.add(road);
+    segment.add(stripes);
+    return segment;
+}
+
+//  crear bordes amarillos para q se extienden hasta las esquinas
+function crearBordesConGrosor(grosorVertical = 60) {
+    const grupo = new THREE.Group();
+    const material = new THREE.MeshStandardMaterial({ color: 0xFFD700 });
+    // borde exterior
+    const topExt = new THREE.Mesh(
+        new THREE.BoxGeometry(2 * OUTER_HALF_X, grosorVertical, borderWidth),
+        material
+    );
+    topExt.position.set(0, grosorVertical / 2, OUTER_HALF_Z);
+    const bottomExt = new THREE.Mesh(
+        new THREE.BoxGeometry(2 * OUTER_HALF_X, grosorVertical, borderWidth),
+        material
+    );
+    bottomExt.position.set(0, grosorVertical / 2, -OUTER_HALF_Z);
+    const leftExt = new THREE.Mesh(
+        new THREE.BoxGeometry(borderWidth, grosorVertical, 2 * OUTER_HALF_Z),
+        material
+    );
+    leftExt.position.set(-OUTER_HALF_X, grosorVertical / 2, 0);
+    const rightExt = new THREE.Mesh(
+        new THREE.BoxGeometry(borderWidth, grosorVertical, 2 * OUTER_HALF_Z),
+        material
+    );
+    rightExt.position.set(OUTER_HALF_X, grosorVertical / 2, 0);
 
 
-// borde amarillo izquierdo
-const borderGeometry = new THREE.PlaneGeometry(borderWidth, roadLength);
-const borderMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700 }); 
+    // borde interno
+    const topInt = new THREE.Mesh(
+        new THREE.BoxGeometry(2 * INNER_HALF_X, grosorVertical, borderWidth),
+        material
+    );
+    topInt.position.set(0, grosorVertical / 2, INNER_HALF_Z);
+    const bottomInt = new THREE.Mesh(
+        new THREE.BoxGeometry(2 * INNER_HALF_X, grosorVertical, borderWidth),
+        material
+    );
+    bottomInt.position.set(0, grosorVertical / 2, -INNER_HALF_Z);
+    const leftInt = new THREE.Mesh(
+        new THREE.BoxGeometry(borderWidth, grosorVertical, 2 * INNER_HALF_Z),
+        material
+    );
+    leftInt.position.set(-INNER_HALF_X, grosorVertical / 2, 0);
+    const rightInt = new THREE.Mesh(
+        new THREE.BoxGeometry(borderWidth, grosorVertical, 2 * INNER_HALF_Z),
+        material
+    );
+    rightInt.position.set(INNER_HALF_X, grosorVertical / 2, 0);
 
-const leftBorder = new THREE.Mesh(borderGeometry, borderMaterial);
-leftBorder
-leftBorder.position.x = -(roadWidth / 2 + borderWidth / 2); 
-leftBorder.rotation.set(-0.5 * Math.PI, 0, 0);
-// leftBorder.receiveShadow = true;
+    // agregamos 
+    grupo.add(topExt, bottomExt, leftExt, rightExt);
+    grupo.add(topInt, bottomInt, leftInt, rightInt);
 
-// borde amarillo derecho
-const rightBorder = new THREE.Mesh(borderGeometry, borderMaterial);
-rightBorder.position.x = roadWidth / 2 + borderWidth / 2; 
-rightBorder.rotation.set(-0.5 * Math.PI, 0, 0);
-// rightBorder.receiveShadow = true
-
-
-
-// franjas blancas en el centro
-const stripeGroup = new THREE.Group();
-
-const totalStripes = Math.floor(roadLength / (stripeLength + stripeGap));
-for (let i = 0; i < totalStripes; i++) {
-    const zPosition = -roadLength / 2 + (i * (stripeLength + stripeGap)) + stripeLength / 2;
-    
-    const stripeGeometry = new THREE.PlaneGeometry(stripeWidth, stripeLength);
-    const stripeMaterial = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
-    const stripe = new THREE.Mesh(stripeGeometry, stripeMaterial);
-
-    stripe.position.set(0, 0.1, zPosition); 
-    stripe.rotation.set(-0.5 * Math.PI, 0, 0); 
-    stripe.receiveShadow = true;
-
-    stripeGroup.add(stripe);
+    return grupo;
 }
 
 
+
+// ponemos y creamos los segmentos de la pista
+const shortsegmentlength = 170;   
+const longsegmentlength = 190; 
+const bottomSegment = createLongSegment(shortsegmentlength);
+bottomSegment.position.set(0, 0, -halfH);
+const topSegment = createLongSegment(shortsegmentlength);
+topSegment.position.set(0, 0, halfH);
+const leftSegment = createShortSegment(longsegmentlength);
+leftSegment.position.set(-halfW, 0, 0);
+const rightSegment = createShortSegment(longsegmentlength);
+rightSegment.position.set(halfW, 0, 0);
+
+
+// creamos bordes amarillos 
+const bordesAmarillos = crearBordesConGrosor(0.8);
+
+
+// afrupamos todo 
 const pista = new THREE.Group();
-pista.add(road);
-pista.add(leftBorder);
+pista.add(bottomSegment, topSegment, leftSegment, rightSegment, bordesAmarillos);
+
+export { pista as plane };
 pista.add(rightBorder);
 pista.add(stripeGroup)
 
