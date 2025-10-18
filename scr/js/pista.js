@@ -1,18 +1,14 @@
-import * as THREE from "three"
+import * as THREE from "three";
 
-// cosas de la coarretera
-// ancho y lago de la carretera
 const roadWidth = 35;        
 const totalWidth = 200;      
-const totalHeight = 150;  
+const totalHeight = 150;     
 
-// lineas amarillas a los lados
-const borderWidth = 5;
 
-// rayas blancas
-const stripeWidth = 1.5; 
-const stripeLength = 5; 
-const stripeGap = 10 // espacio entre rayas
+const borderWidth = 5;       
+const stripeWidth = 1.5;
+const stripeLength = 5;
+const stripeGap = 10;
 
 
 const halfW = totalWidth / 2;      
@@ -22,7 +18,7 @@ const halfRoad = roadWidth / 2;
 // para los bordes amarillos
 const OUTER_HALF_X = halfW + halfRoad; 
 const OUTER_HALF_Z = halfH + halfRoad; 
-const INNER_HALF_X = halfW - halfRoad; /
+const INNER_HALF_X = halfW - halfRoad; 
 const INNER_HALF_Z = halfH - halfRoad; 
 
 // segmentos largos en el eje x y SIN bordes amarillos 
@@ -159,9 +155,5 @@ const bordesAmarillos = crearBordesConGrosor(0.8);
 // afrupamos todo 
 const pista = new THREE.Group();
 pista.add(bottomSegment, topSegment, leftSegment, rightSegment, bordesAmarillos);
-
-export { pista as plane };
-pista.add(rightBorder);
-pista.add(stripeGroup)
 
 export { pista as plane };
