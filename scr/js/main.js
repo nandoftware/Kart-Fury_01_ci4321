@@ -28,7 +28,7 @@ import {
 } from "./colisiones";
 
 import { 
-    caja,
+    AddAllBoxes,
     PowerUpAnimation,
  } from "./powerUps";
 
@@ -58,7 +58,7 @@ carritoCamera.position.set(0,2.5,1.5);
 // orbit.update();
 
 
-scene.add(caja)
+AddAllBoxes(scene)
 
 // metemos la pista
 scene.add(plane);
