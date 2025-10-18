@@ -44,7 +44,8 @@ mainCamera.position.set(0,15,10);
 scene.add(plane);
 
 // posicionamos el carrito en la pista
-carrito.position.set(0, 0, 0);
+carrito.position.set(0, 0, -75);
+carrito.rotation.y = Math.PI / 2;
 scene.add(carrito);
 const front = new THREE.Vector3(0,0,-10)
 mainCamera.lookAt(front )
@@ -53,12 +54,12 @@ carrito.add(mainCamera)
 
 const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 0.8)
 directionalLight.position.set(-30,50,0)
-const dLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5)
+// const dLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5)
 scene.add(directionalLight)
-scene.add(dLightHelper)
+// scene.add(dLightHelper)
 
-const axesHelper = new THREE.AxesHelper(5);
-scene.add(axesHelper);
+// const axesHelper = new THREE.AxesHelper(5);
+// scene.add(axesHelper);
 
 let lastFrameTime = 0;
 
